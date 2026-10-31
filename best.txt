@@ -1,0 +1,1915 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Woooble</title>
+    <style>
+      :root {
+        --bg: #f3f4f6;
+        --surface: #ffffff;
+        --surface-2: #f5f6f8;
+        --surface-3: #eef2f7;
+        --text: #111827;
+        --text-soft: #64748b;
+        --border: rgba(148, 163, 184, 0.35);
+        --purple-1: #c084fc;
+        --purple-2: #8b5cf6;
+        --purple-3: #6366f1;
+        --danger: #ef4444;
+        --success: #22c55e;
+        --shadow: 0 16px 36px rgba(15, 23, 42, 0.12);
+
+        --dark-bg: #1e1e1e;
+        --dark-surface: #27272a;
+        --dark-surface-2: #1f1f22;
+        --dark-text: #f8fafc;
+        --dark-text-soft: #a1a1aa;
+        --dark-border: rgba(255,255,255,0.08);
+      }
+
+      * { box-sizing: border-box; }
+
+      html, body {
+        margin: 0;
+        padding: 0;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+      }
+
+      body.dark {
+        background: var(--dark-bg);
+        color: var(--dark-text);
+      }
+
+      body {
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+      }
+
+      .app {
+        width: 100%;
+        max-width: 430px;
+        min-height: 100vh;
+        background: var(--bg);
+        position: relative;
+        overflow: hidden;
+      }
+
+      body.dark .app {
+        background: var(--dark-bg);
+      }
+
+      .screen {
+        display: none;
+        min-height: 100vh;
+        position: relative;
+      }
+
+      .screen.active {
+        display: block;
+      }
+
+      /* SVG Utility Styles */
+      .svg-icon {
+        width: 24px;
+        height: 24px;
+        stroke: currentColor;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        fill: none;
+        display: inline-block;
+        vertical-align: middle;
+      }
+
+      .svg-icon.fill-current {
+        fill: currentColor;
+      }
+
+      .topbar {
+        position: relative;
+        padding: 18px 18px 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        color: var(--text);
+      }
+
+      body.dark .topbar { color: var(--dark-text); }
+
+      .topbar.centered {
+        justify-content: center;
+      }
+
+      .topbar .title {
+        font-size: 2.3rem;
+        line-height: 1;
+      }
+
+      .topbar .action {
+        position: absolute;
+        right: 18px;
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.8);
+        border: 1px solid var(--border);
+        display: grid;
+        place-items: center;
+        font-size: 20px;
+        color: var(--text);
+        cursor: pointer;
+      }
+
+      body.dark .topbar .action {
+        background: rgba(39,39,42,0.9);
+        color: var(--dark-text);
+        border-color: var(--dark-border);
+      }
+
+      .brand-mark {
+        width: 180px;
+        height: 180px;
+        border-radius: 42px;
+        background: linear-gradient(135deg, #d9b4ff 0%, #a78bfa 40%, #8b5cf6 100%);
+        box-shadow: 0 20px 40px rgba(139, 92, 246, 0.35);
+        display: grid;
+        place-items: center;
+        font-size: 7rem;
+        font-weight: 900;
+        color: white;
+        margin: 0 auto 18px;
+      }
+
+      .brand-word {
+        text-align: center;
+        font-size: clamp(2rem, 6vw, 3rem);
+        font-weight: 900;
+        letter-spacing: -0.05em;
+        margin-top: 12px;
+      }
+
+      .splash-wrap {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 18px 20px 20px;
+      }
+
+      .splash-center {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .status-time {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--text);
+        align-self: flex-start;
+        padding-left: 4px;
+      }
+
+      body.dark .status-time {
+        color: var(--dark-text);
+      }
+
+      .cta-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+      }
+
+      .btn-primary {
+        border: none;
+        border-radius: 999px;
+        padding: 18px 18px;
+        font-size: 1.2rem;
+        font-weight: 800;
+        letter-spacing: 0.04em;
+        background: linear-gradient(135deg, var(--purple-1), var(--purple-2));
+        color: white;
+        cursor: pointer;
+        box-shadow: 0 12px 26px rgba(139, 92, 246, 0.35);
+      }
+
+      .btn-primary.small {
+        font-size: 1.05rem;
+        padding: 16px 18px;
+      }
+
+      .auth-wrap {
+        min-height: 100vh;
+        padding: 20px 24px 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .auth-container {
+        width: 100%;
+        max-width: 380px;
+      }
+
+      .mock-phone {
+        width: 170px;
+        height: 200px;
+        margin: 0 auto 18px;
+        border: 8px solid rgba(148,163,184,0.4);
+        border-radius: 26px;
+        background: #f7f7f8;
+        position: relative;
+        box-shadow: 0 15px 30px rgba(15, 23, 42, 0.08);
+      }
+
+      body.dark .mock-phone {
+        background: #2b2b2d;
+        border-color: rgba(255,255,255,0.1);
+      }
+
+      .mock-phone .inner {
+        position: absolute;
+        inset: 8px;
+        border-radius: 18px;
+        background: linear-gradient(180deg, #fbfbfc, #f1f5f9);
+      }
+
+      body.dark .mock-phone .inner {
+        background: linear-gradient(180deg, #2b2b2d, #1f1f22);
+      }
+
+      .mock-phone .dots {
+        position: absolute;
+        top: 12px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 62px;
+        height: 18px;
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        align-items: center;
+      }
+
+      .mock-phone .dots span {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: rgba(148,163,184,0.7);
+      }
+
+      .mock-phone .person {
+        position: absolute;
+        left: 50%;
+        bottom: 18px;
+        transform: translateX(-50%);
+        width: 72px;
+        height: 98px;
+      }
+
+      .mock-phone .person::before {
+        content: "";
+        position: absolute;
+        left: 50%;
+        top: 0;
+        transform: translateX(-50%);
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: #f2c1a5;
+      }
+
+      .mock-phone .person::after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        bottom: 0;
+        transform: translateX(-50%);
+        width: 62px;
+        height: 62px;
+        border-radius: 18px 18px 12px 12px;
+        background: #f1c783;
+      }
+
+      .auth-title {
+        text-align: center;
+        font-size: clamp(2.1rem, 6vw, 3rem);
+        font-weight: 900;
+        margin: 12px 0 6px;
+        letter-spacing: -0.05em;
+      }
+
+      .auth-subtitle {
+        text-align: center;
+        font-size: 1.05rem;
+        color: var(--text-soft);
+        margin-bottom: 24px;
+      }
+
+      body.dark .auth-subtitle {
+        color: var(--dark-text-soft);
+      }
+
+      .field {
+        position: relative;
+        margin-bottom: 16px;
+      }
+
+      .field input {
+        width: 100%;
+        padding: 16px 50px 16px 50px;
+        background: #efeff1;
+        border: 1px solid rgba(148,163,184,0.25);
+        border-radius: 22px;
+        color: var(--text);
+        font-size: 1.05rem;
+      }
+
+      body.dark .field input {
+        background: var(--dark-surface);
+        border-color: var(--dark-border);
+        color: var(--dark-text);
+      }
+
+      .field .field-icon {
+        position: absolute;
+        left: 18px;
+        top: 50%;
+        transform: translateY(-50%);
+        stroke: #8b5cf6;
+      }
+
+      .field .toggle-eye {
+        position: absolute;
+        right: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        border: none;
+        background: transparent;
+        color: var(--text-soft);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+      }
+
+      body.dark .field .toggle-eye {
+        color: var(--dark-text-soft);
+      }
+
+      .forgot {
+        text-align: right;
+        margin: 8px 6px 18px;
+      }
+
+      .forgot a,
+      .link {
+        color: #8b5cf6;
+        text-decoration: none;
+        font-weight: 800;
+      }
+
+      .login-btn {
+        width: 100%;
+        margin-top: 6px;
+      }
+
+      .switch-copy {
+        margin-top: 24px;
+        text-align: center;
+        font-size: 1.2rem;
+        color: var(--text-soft);
+      }
+
+      body.dark .switch-copy {
+        color: var(--dark-text-soft);
+      }
+
+      .switch-copy strong {
+        color: #8b5cf6;
+        font-weight: 900;
+        cursor: pointer;
+      }
+
+      .feed {
+        padding-bottom: 90px;
+      }
+
+      .story-row {
+        display: flex;
+        gap: 14px;
+        overflow-x: auto;
+        padding: 8px 16px 6px;
+        scrollbar-width: none;
+      }
+
+      .story-row::-webkit-scrollbar {
+        display: none;
+      }
+
+      .story {
+        min-width: 82px;
+        text-align: center;
+      }
+
+      .story-avatar {
+        width: 74px;
+        height: 74px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #d8b4fe, #8b5cf6);
+        padding: 2px;
+        margin: 0 auto 8px;
+      }
+
+      .story-avatar-inner {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        background-size: cover;
+        background-position: center;
+      }
+
+      .story-name {
+        font-size: 0.76rem;
+        color: var(--text-soft);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      body.dark .story-name { color: var(--dark-text-soft); }
+
+      .post {
+        background: rgba(255,255,255,0.9);
+        border-radius: 28px;
+        overflow: hidden;
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+        margin: 18px auto 0;
+        width: calc(100% - 24px);
+      }
+
+      body.dark .post {
+        background: var(--dark-surface);
+        border-color: var(--dark-border);
+      }
+
+      .post-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 14px 14px 10px;
+      }
+
+      .post-header .avatar {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background-size: cover;
+        background-position: center;
+      }
+
+      .post-author {
+        flex: 1;
+        font-weight: 800;
+        color: var(--text);
+      }
+
+      body.dark .post-author { color: var(--dark-text); }
+
+      .post-handle {
+        font-size: 0.75rem;
+        color: var(--text-soft);
+      }
+
+      body.dark .post-handle { color: var(--dark-text-soft); }
+
+      .post-more {
+        display: flex;
+        align-items: center;
+        color: var(--text-soft);
+        cursor: pointer;
+      }
+
+      .post-image {
+        width: 100%;
+        height: 420px;
+        background-size: cover;
+        background-position: center;
+      }
+
+      .post-actions {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 14px 16px 8px;
+      }
+
+      .icon-btn {
+        border: none;
+        background: transparent;
+        color: var(--text);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 4px;
+        border-radius: 50%;
+        transition: transform 0.15s ease;
+      }
+
+      .icon-btn:active {
+        transform: scale(0.88);
+      }
+
+      body.dark .icon-btn { color: var(--dark-text); }
+
+      .icon-btn.liked {
+        color: var(--danger);
+      }
+
+      .meta {
+        padding: 0 16px 6px;
+        color: var(--text-soft);
+        font-size: 0.9rem;
+      }
+
+      body.dark .meta { color: var(--dark-text-soft); }
+
+      .caption {
+        padding: 0 16px 18px;
+        font-size: 1rem;
+        font-weight: 600;
+      }
+
+      .caption strong {
+        font-weight: 900;
+      }
+
+      .time-ago {
+        padding: 0 16px 18px;
+        color: var(--text-soft);
+        font-size: 0.9rem;
+      }
+
+      body.dark .time-ago { color: var(--dark-text-soft); }
+
+      .bottom-nav {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        max-width: 430px;
+        height: 88px;
+        background: rgba(255,255,255,0.92);
+        border-top: 1px solid var(--border);
+        backdrop-filter: blur(10px);
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        z-index: 10;
+      }
+
+      body.dark .bottom-nav {
+        background: rgba(24,24,27,0.96);
+        border-color: var(--dark-border);
+      }
+
+      .nav-item {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        background: transparent;
+        color: var(--text-soft);
+        cursor: pointer;
+      }
+
+      .nav-item.active {
+        color: #8b5cf6;
+      }
+
+      .nav-item.create {
+        width: 58px;
+        height: 58px;
+        border-radius: 50%;
+        margin: auto;
+        background: linear-gradient(135deg, var(--purple-1), var(--purple-2));
+        color: white;
+        box-shadow: 0 12px 26px rgba(139, 92, 246, 0.5);
+      }
+
+      .nav-item.create.active {
+        color: white;
+      }
+
+      .section {
+        padding: 10px 16px 20px;
+      }
+
+      .search-box {
+        background: rgba(255,255,255,0.75);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 12px 16px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: var(--text-soft);
+      }
+
+      body.dark .search-box {
+        background: rgba(39,39,42,0.9);
+        border-color: var(--dark-border);
+      }
+
+      .search-box input {
+        flex: 1;
+        background: transparent;
+        border: none;
+        color: var(--text);
+        font-size: 1rem;
+        outline: none;
+      }
+
+      body.dark .search-box input {
+        color: var(--dark-text);
+      }
+
+      .trend-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-top: 18px;
+      }
+
+      .trend {
+        height: 92px;
+        border-radius: 18px;
+        padding: 12px;
+        color: white;
+        font-weight: 800;
+        display: flex;
+        align-items: flex-end;
+        box-shadow: 0 12px 22px rgba(15, 23, 42, 0.12);
+      }
+
+      .t1 { background: linear-gradient(135deg, #38bdf8, #06b6d4); }
+      .t2 { background: linear-gradient(135deg, #a78bfa, #ec4899); }
+      .t3 { background: linear-gradient(135deg, #34d399, #14b8a6); }
+      .t4 { background: linear-gradient(135deg, #fbbf24, #f97316); }
+
+      .list-card {
+        margin-top: 18px;
+        background: rgba(255,255,255,0.8);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 12px;
+      }
+
+      body.dark .list-card {
+        background: rgba(39,39,42,0.9);
+        border-color: var(--dark-border);
+      }
+
+      .list-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 8px 0;
+      }
+
+      .list-item .thumb {
+        width: 52px;
+        height: 52px;
+        border-radius: 14px;
+        background-size: cover;
+        background-position: center;
+      }
+
+      .notif-list {
+        padding: 10px 14px 100px;
+      }
+
+      .notif-item {
+        display: flex;
+        gap: 12px;
+        background: rgba(255,255,255,0.8);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 12px;
+        margin-bottom: 12px;
+      }
+
+      body.dark .notif-item {
+        background: rgba(39,39,42,0.9);
+        border-color: var(--dark-border);
+      }
+
+      .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #8b5cf6;
+        margin-top: 8px;
+      }
+
+      .notif-item.unread {
+        background: rgba(168, 85, 247, 0.08);
+      }
+
+      .profile-header {
+        position: relative;
+        width: 100%;
+        height: 160px;
+        background-image: url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80');
+        background-size: cover;
+        background-position: center;
+      }
+
+      .profile-card {
+        padding: 0 16px 100px;
+      }
+
+      .profile-avatar {
+        width: 90px;
+        height: 90px;
+        border-radius: 50%;
+        background-image: url('https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=400&q=80');
+        background-size: cover;
+        background-position: center;
+        border: 4px solid var(--bg);
+        margin-top: -42px;
+      }
+
+      body.dark .profile-avatar {
+        border-color: var(--dark-bg);
+      }
+
+      .profile-name {
+        margin-top: 12px;
+        font-size: 2rem;
+        font-weight: 900;
+      }
+
+      .profile-meta {
+        color: var(--text-soft);
+        font-size: 0.95rem;
+      }
+
+      body.dark .profile-meta { color: var(--dark-text-soft); }
+
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+        margin-top: 18px;
+      }
+
+      .stat-box {
+        background: rgba(255,255,255,0.8);
+        border-radius: 18px;
+        border: 1px solid var(--border);
+        padding: 16px 8px;
+        text-align: center;
+      }
+
+      body.dark .stat-box {
+        background: rgba(39,39,42,0.9);
+        border-color: var(--dark-border);
+      }
+
+      .stat-box strong {
+        display: block;
+        font-size: 1.5rem;
+        font-weight: 900;
+      }
+
+      .stat-box span {
+        font-size: 0.8rem;
+        color: var(--text-soft);
+      }
+
+      body.dark .stat-box span { color: var(--dark-text-soft); }
+
+      .grid-posts {
+        margin-top: 18px;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+      }
+
+      .grid-posts .img {
+        width: 100%;
+        aspect-ratio: 1;
+        border-radius: 14px;
+        background-size: cover;
+        background-position: center;
+      }
+
+      .messages-wrap {
+        padding: 18px 16px 90px;
+      }
+
+      .chat-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .chat-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: rgba(255,255,255,0.8);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 10px 12px;
+        cursor: pointer;
+      }
+
+      body.dark .chat-item {
+        background: rgba(39,39,42,0.9);
+        border-color: var(--dark-border);
+      }
+
+      .chat-avatar {
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        background-size: cover;
+        background-position: center;
+      }
+
+      .chat-name {
+        font-weight: 800;
+        margin-bottom: 4px;
+      }
+
+      .chat-preview {
+        color: var(--text-soft);
+        font-size: 0.8rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      body.dark .chat-preview { color: var(--dark-text-soft); }
+
+      .chat-badge {
+        min-width: 20px;
+        height: 20px;
+        padding: 0 6px;
+        border-radius: 999px;
+        background: #8b5cf6;
+        color: white;
+        font-size: 0.72rem;
+        display: grid;
+        place-items: center;
+        font-weight: 700;
+      }
+
+      .chat-window {
+        padding: 0 16px 100px;
+      }
+
+      .chat-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 0 14px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .chat-header .avatar {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        background-size: cover;
+        background-position: center;
+      }
+
+      .chat-body {
+        padding-top: 18px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .bubble {
+        max-width: 75%;
+        padding: 12px 14px;
+        border-radius: 18px;
+        font-size: 0.95rem;
+        line-height: 1.4;
+      }
+
+      .bubble.me {
+        align-self: flex-end;
+        background: linear-gradient(135deg, var(--purple-1), var(--purple-2));
+        color: white;
+      }
+
+      .bubble.them {
+        align-self: flex-start;
+        background: rgba(255,255,255,0.8);
+        border: 1px solid var(--border);
+        color: var(--text);
+      }
+
+      body.dark .bubble.them {
+        background: rgba(39,39,42,0.9);
+        border-color: var(--dark-border);
+        color: var(--dark-text);
+      }
+
+      .composer {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        max-width: 430px;
+        padding: 10px 16px 20px;
+        background: var(--bg);
+      }
+
+      body.dark .composer { background: var(--dark-bg); }
+
+      .composer-box {
+        background: rgba(255,255,255,0.9);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 12px;
+      }
+
+      body.dark .composer-box {
+        background: rgba(39,39,42,0.9);
+        border-color: var(--dark-border);
+      }
+
+      .composer-box input {
+        flex: 1;
+        border: none;
+        background: transparent;
+        font-size: 1rem;
+        color: var(--text);
+        outline: none;
+      }
+
+      body.dark .composer-box input { color: var(--dark-text); }
+
+      .send-btn {
+        width: 38px;
+        height: 38px;
+        border: none;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--purple-1), var(--purple-2));
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+      }
+
+      /* Dynamic Modals (Create Post & Comment Panel) */
+      .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        display: none;
+        align-items: flex-end;
+        justify-content: center;
+        padding: 0;
+        z-index: 100;
+        backdrop-filter: blur(4px);
+      }
+
+      .modal-overlay.show {
+        display: flex;
+      }
+
+      .modal-card {
+        width: 100%;
+        max-width: 430px;
+        background: white;
+        border-top-left-radius: 28px;
+        border-top-right-radius: 28px;
+        padding: 20px 18px 24px;
+        box-shadow: 0 -10px 40px rgba(15, 23, 42, 0.25);
+        max-height: 85vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      body.dark .modal-card {
+        background: var(--dark-surface);
+      }
+
+      .modal-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 1.25rem;
+        font-weight: 800;
+        margin-bottom: 14px;
+      }
+
+      .close-x {
+        border: none;
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: rgba(148,163,184,0.15);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text);
+      }
+
+      body.dark .close-x { color: var(--dark-text); }
+
+      .upload-box {
+        border: 2px dashed rgba(139,92,246,0.4);
+        border-radius: 18px;
+        background: rgba(168,85,247,0.05);
+        padding: 24px 16px;
+        text-align: center;
+        color: var(--text-soft);
+        margin-bottom: 14px;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+      }
+
+      body.dark .upload-box { color: var(--dark-text-soft); }
+
+      .upload-preview {
+        width: 100%;
+        max-height: 180px;
+        border-radius: 14px;
+        object-fit: cover;
+        display: none;
+        margin-bottom: 12px;
+      }
+
+      .textarea {
+        width: 100%;
+        min-height: 90px;
+        resize: none;
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        background: rgba(243,244,246,0.9);
+        color: var(--text);
+        padding: 14px 16px;
+        font-family: inherit;
+        font-size: 1rem;
+        outline: none;
+      }
+
+      body.dark .textarea {
+        background: rgba(39,39,42,0.9);
+        border-color: var(--dark-border);
+        color: var(--dark-text);
+      }
+
+      .modal-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 8px;
+        margin-top: 14px;
+      }
+
+      .chip-group {
+        display: flex;
+        gap: 8px;
+      }
+
+      .chip {
+        border: none;
+        background: rgba(148,163,184,0.12);
+        color: var(--text);
+        border-radius: 999px;
+        padding: 10px 14px;
+        font-weight: 700;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.9rem;
+      }
+
+      body.dark .chip { color: var(--dark-text); }
+
+      .chip.primary {
+        background: linear-gradient(135deg, var(--purple-1), var(--purple-2));
+        color: white;
+      }
+
+      /* Comment Drawer Specifics */
+      .comments-list {
+        flex: 1;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        margin-bottom: 14px;
+        padding-right: 4px;
+      }
+
+      .comment-item {
+        display: flex;
+        gap: 12px;
+        font-size: 0.95rem;
+      }
+
+      .comment-avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background-size: cover;
+        background-position: center;
+        flex-shrink: 0;
+      }
+
+      .comment-content {
+        flex: 1;
+        background: rgba(243,244,246,0.8);
+        border-radius: 16px;
+        padding: 10px 14px;
+      }
+
+      body.dark .comment-content {
+        background: rgba(39,39,42,0.8);
+      }
+
+      .comment-user {
+        font-weight: 800;
+        font-size: 0.85rem;
+        margin-bottom: 2px;
+      }
+
+      .comment-input-box {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+
+      .comment-input-box input {
+        flex: 1;
+        border: 1px solid var(--border);
+        background: rgba(243,244,246,0.9);
+        border-radius: 999px;
+        padding: 12px 16px;
+        font-size: 0.95rem;
+        color: var(--text);
+        outline: none;
+      }
+
+      body.dark .comment-input-box input {
+        background: rgba(39,39,42,0.9);
+        border-color: var(--dark-border);
+        color: var(--dark-text);
+      }
+
+      .hidden { display: none !important; }
+
+      @media (min-width: 440px) {
+        .app {
+          border-left: 1px solid rgba(148,163,184,0.18);
+          border-right: 1px solid rgba(148,163,184,0.18);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <!-- SPLASH SCREEN -->
+      <div id="splash" class="screen active">
+        <div class="splash-wrap">
+          <div class="status-time">1:42</div>
+
+          <div class="splash-center">
+            <div class="brand-mark">W</div>
+            <div class="brand-word">WOOBLE</div>
+          </div>
+
+          <div class="cta-row">
+            <button class="btn-primary" data-target="login">LOGIN</button>
+            <button class="btn-primary" data-target="signup">SIGN UP</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- LOGIN SCREEN -->
+      <div id="login" class="screen">
+        <div class="auth-wrap">
+          <div class="auth-container">
+            <div class="mock-phone">
+              <div class="inner"></div>
+              <div class="dots">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+              <div class="person"></div>
+            </div>
+
+            <div class="auth-title">Welcome back!</div>
+            <div class="auth-subtitle">Log into your account and get started!</div>
+
+            <div class="field">
+              <svg class="svg-icon field-icon" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              <input type="email" value="maya@woooble.app" placeholder="Email" />
+            </div>
+
+            <div class="field">
+              <svg class="svg-icon field-icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              <input id="loginPassword" type="password" value="password123" placeholder="Password" />
+              <button class="toggle-eye" type="button" data-toggle="loginPassword">
+                <svg class="svg-icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+
+            <div class="forgot"><a href="#">Forgot Password?</a></div>
+
+            <button class="btn-primary login-btn" data-login>LOG IN</button>
+
+            <div class="switch-copy">
+              Don't have an account? <strong data-target="signup">Sign Up</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SIGNUP SCREEN -->
+      <div id="signup" class="screen">
+        <div class="auth-wrap">
+          <div class="auth-container">
+            <div class="auth-title" style="font-size:2.2rem;">Welcome to Woooble</div>
+
+            <div class="field">
+              <svg class="svg-icon field-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              <input type="text" placeholder="Username" />
+            </div>
+
+            <div class="field">
+              <svg class="svg-icon field-icon" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              <input type="email" placeholder="Email" />
+            </div>
+
+            <div class="field">
+              <svg class="svg-icon field-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+              <input type="text" placeholder="Country" />
+            </div>
+
+            <div class="field">
+              <svg class="svg-icon field-icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              <input id="signupPassword" type="password" placeholder="Password" />
+              <button class="toggle-eye" type="button" data-toggle="signupPassword">
+                <svg class="svg-icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+
+            <div class="field">
+              <svg class="svg-icon field-icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              <input id="signupConfirm" type="password" placeholder="Confirm Password" />
+              <button class="toggle-eye" type="button" data-toggle="signupConfirm">
+                <svg class="svg-icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+
+            <button class="btn-primary login-btn" data-register>SIGN UP</button>
+
+            <div class="switch-copy">
+              Already have an account? <strong data-target="login">Log In</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FEED SCREEN -->
+      <div id="feedScreen" class="screen">
+        <div class="feed">
+          <div class="topbar centered">
+            <div class="title">Woooble</div>
+            <button class="action" id="themeToggle" title="Toggle Theme">
+              <svg class="svg-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+            </button>
+          </div>
+
+          <div class="story-row">
+            <div class="story">
+              <div class="story-avatar"><div class="story-avatar-inner" style="background-image:url('https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80')"></div></div>
+              <div class="story-name">liamcharlie</div>
+            </div>
+            <div class="story">
+              <div class="story-avatar"><div class="story-avatar-inner" style="background-image:url('https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=200&q=80')"></div></div>
+              <div class="story-name">nora</div>
+            </div>
+            <div class="story">
+              <div class="story-avatar"><div class="story-avatar-inner" style="background-image:url('https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=200&q=80')"></div></div>
+              <div class="story-name">jae</div>
+            </div>
+            <div class="story">
+              <div class="story-avatar"><div class="story-avatar-inner" style="background-image:url('https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=200&q=80')"></div></div>
+              <div class="story-name">mila</div>
+            </div>
+            <div class="story">
+              <div class="story-avatar"><div class="story-avatar-inner" style="background-image:url('https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=200&q=80')"></div></div>
+              <div class="story-name">drew</div>
+            </div>
+          </div>
+
+          <div id="postContainer"></div>
+        </div>
+
+        <div class="bottom-nav">
+          <button class="nav-item active" data-nav="feedScreen">
+            <svg class="svg-icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          </button>
+          <button class="nav-item" data-nav="searchScreen">
+            <svg class="svg-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </button>
+          <button class="nav-item create" data-open-create>
+            <svg class="svg-icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
+          <button class="nav-item" data-nav="notificationsScreen">
+            <svg class="svg-icon" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          </button>
+          <button class="nav-item" data-nav="profileScreen">
+            <svg class="svg-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- SEARCH SCREEN -->
+      <div id="searchScreen" class="screen">
+        <div class="section">
+          <div class="topbar">
+            <div style="font-size:1.2rem; font-weight:800; margin:0 auto;">Search</div>
+          </div>
+
+          <div class="search-box">
+            <svg class="svg-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" placeholder="Search Woooble" />
+          </div>
+
+          <div class="trend-grid">
+            <div class="trend t1">Travel vibes</div>
+            <div class="trend t2">Design inspo</div>
+            <div class="trend t3">Wellness</div>
+            <div class="trend t4">Night mode</div>
+          </div>
+
+          <div class="list-card">
+            <div class="list-item">
+              <div class="thumb" style="background-image:url('https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=400&q=80')"></div>
+              <div>
+                <div style="font-weight:800;">Minimal interiors</div>
+                <div style="color:var(--text-soft); font-size:.75rem;">Design</div>
+              </div>
+            </div>
+            <div class="list-item">
+              <div class="thumb" style="background-image:url('https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=400&q=80')"></div>
+              <div>
+                <div style="font-weight:800;">Mountain escapes</div>
+                <div style="color:var(--text-soft); font-size:.75rem;">Travel</div>
+              </div>
+            </div>
+            <div class="list-item">
+              <div class="thumb" style="background-image:url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&q=80')"></div>
+              <div>
+                <div style="font-weight:800;">Food finds</div>
+                <div style="color:var(--text-soft); font-size:.75rem;">Lifestyle</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bottom-nav">
+          <button class="nav-item" data-nav="feedScreen">
+            <svg class="svg-icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          </button>
+          <button class="nav-item active" data-nav="searchScreen">
+            <svg class="svg-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </button>
+          <button class="nav-item create" data-open-create>
+            <svg class="svg-icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
+          <button class="nav-item" data-nav="notificationsScreen">
+            <svg class="svg-icon" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          </button>
+          <button class="nav-item" data-nav="profileScreen">
+            <svg class="svg-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- NOTIFICATIONS SCREEN -->
+      <div id="notificationsScreen" class="screen">
+        <div class="section">
+          <div class="topbar">
+            <div style="font-size:1.2rem; font-weight:800;">Notifications</div>
+          </div>
+
+          <div class="notif-list">
+            <div class="notif-item unread">
+              <div class="dot"></div>
+              <div style="flex:1;">
+                <div style="font-weight:800;">Mila liked your photo</div>
+                <div style="color:var(--text-soft); margin-top:4px;">Your sunset moment got a heart.</div>
+                <div style="color:var(--text-soft); margin-top:6px; font-size:.8rem;">5m ago</div>
+              </div>
+            </div>
+            <div class="notif-item unread">
+              <div class="dot" style="background:#22c55e;"></div>
+              <div style="flex:1;">
+                <div style="font-weight:800;">Jae commented</div>
+                <div style="color:var(--text-soft); margin-top:4px;">“This looks amazing!”</div>
+                <div style="color:var(--text-soft); margin-top:6px; font-size:.8rem;">1h ago</div>
+              </div>
+            </div>
+            <div class="notif-item">
+              <div class="dot" style="background:#3b82f6;"></div>
+              <div style="flex:1;">
+                <div style="font-weight:800;">New follower</div>
+                <div style="color:var(--text-soft); margin-top:4px;">Jay joined your followers.</div>
+                <div style="color:var(--text-soft); margin-top:6px; font-size:.8rem;">2h ago</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bottom-nav">
+          <button class="nav-item" data-nav="feedScreen">
+            <svg class="svg-icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          </button>
+          <button class="nav-item" data-nav="searchScreen">
+            <svg class="svg-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </button>
+          <button class="nav-item create" data-open-create>
+            <svg class="svg-icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
+          <button class="nav-item active" data-nav="notificationsScreen">
+            <svg class="svg-icon" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          </button>
+          <button class="nav-item" data-nav="profileScreen">
+            <svg class="svg-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- PROFILE SCREEN -->
+      <div id="profileScreen" class="screen">
+        <div class="profile-header"></div>
+
+        <div class="profile-card">
+          <div class="profile-avatar"></div>
+          <div class="profile-name">Maya Stone</div>
+          <div class="profile-meta">@maya.woo</div>
+
+          <div class="stats">
+            <div class="stat-box">
+              <strong id="userPostCount">2</strong>
+              <span>Posts</span>
+            </div>
+            <div class="stat-box">
+              <strong>24K</strong>
+              <span>Likes</span>
+            </div>
+            <div class="stat-box">
+              <strong>820</strong>
+              <span>Comments</span>
+            </div>
+          </div>
+
+          <div class="grid-posts">
+            <div class="img" style="background-image:url('https://images.unsplash.com/photo-1493246507139-91e8fad9978e?auto=format&fit=crop&w=600&q=80')"></div>
+            <div class="img" style="background-image:url('https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=600&q=80')"></div>
+            <div class="img" style="background-image:url('https://images.unsplash.com/photo-1514565131-fce0801e5785?auto=format&fit=crop&w=600&q=80')"></div>
+            <div class="img" style="background-image:url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=600&q=80')"></div>
+            <div class="img" style="background-image:url('https://images.unsplash.com/photo-1493246507139-91e8fad9978e?auto=format&fit=crop&w=600&q=80')"></div>
+            <div class="img" style="background-image:url('https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=600&q=80')"></div>
+          </div>
+        </div>
+
+        <div class="bottom-nav">
+          <button class="nav-item" data-nav="feedScreen">
+            <svg class="svg-icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          </button>
+          <button class="nav-item" data-nav="searchScreen">
+            <svg class="svg-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </button>
+          <button class="nav-item create" data-open-create>
+            <svg class="svg-icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
+          <button class="nav-item" data-nav="notificationsScreen">
+            <svg class="svg-icon" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          </button>
+          <button class="nav-item active" data-nav="profileScreen">
+            <svg class="svg-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- MESSAGES SCREEN -->
+      <div id="messagesScreen" class="screen">
+        <div class="messages-wrap">
+          <div class="topbar">
+            <div style="font-size:1.5rem; font-weight:800;">Messages</div>
+          </div>
+
+          <div class="chat-list">
+            <div class="chat-item" data-chat="chat1">
+              <div class="chat-avatar" style="background-image:url('https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=200&q=80')"></div>
+              <div style="flex:1;">
+                <div class="chat-name">Nora</div>
+                <div class="chat-preview">The photos are live! Want to check them out?</div>
+              </div>
+              <div class="chat-badge">2</div>
+            </div>
+
+            <div class="chat-item" data-chat="chat2">
+              <div class="chat-avatar" style="background-image:url('https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=200&q=80')"></div>
+              <div style="flex:1;">
+                <div class="chat-name">Jae</div>
+                <div class="chat-preview">Coffee after work?</div>
+              </div>
+            </div>
+
+            <div class="chat-item" data-chat="chat3">
+              <div class="chat-avatar" style="background-image:url('https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=200&q=80')"></div><div style="flex:1;">
+                <div class="chat-name">Mila</div>
+                <div class="chat-preview">I sent you the list.</div>
+              </div>
+              <div class="chat-badge">1</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CHAT SCREEN -->
+      <div id="chatScreen" class="screen">
+        <div class="chat-window">
+          <div class="chat-header">
+            <button class="icon-btn" data-back="messagesScreen" style="padding:4px;">
+              <svg class="svg-icon" viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+            </button>
+            <div class="avatar" style="background-image:url('https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=200&q=80')"></div>
+            <div>
+              <div style="font-weight:800;">Nora</div>
+              <div style="color:var(--text-soft); font-size:0.8rem;">Online</div>
+            </div>
+          </div>
+
+          <div class="chat-body">
+            <div class="bubble them">The photos are live! Want to check them out?</div>
+            <div class="bubble me">Absolutely! I’m looking at them now.</div>
+            <div class="bubble them">I love the color palette for the banner. It feels premium.</div>
+            <div class="bubble me">Thanks! I’ve been tweaking the spacing all day.</div>
+          </div>
+        </div>
+
+        <div class="composer">
+          <div class="composer-box">
+            <svg class="svg-icon" viewBox="0 0 24 24" style="color:var(--text-soft)"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+            <input type="text" id="chatInput" placeholder="Write a message..." />
+            <button class="send-btn" id="sendChatBtn">
+              <svg class="svg-icon" viewBox="0 0 24 24" style="width:18px;height:18px"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CREATE POST MODAL OVERLAY -->
+    <div class="modal-overlay" id="createModal">
+      <div class="modal-card">
+        <div class="modal-head">
+          <span>Create Post</span>
+          <button class="close-x" data-close-create>
+            <svg class="svg-icon" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+
+        <img id="uploadPreview" class="upload-preview" alt="Preview" />
+
+        <div class="upload-box" id="uploadDropzone">
+          <svg class="svg-icon" viewBox="0 0 24 24" style="width:36px;height:36px;stroke:#8b5cf6;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          <span>Tap or drag photo to upload</span>
+          <input type="file" id="fileInput" accept="image/*" class="hidden" />
+        </div>
+
+        <textarea id="postCaption" class="textarea" placeholder="What's happening today?"></textarea>
+
+        <div class="modal-actions">
+          <div class="chip-group">
+            <button class="chip" type="button" id="cameraBtn">
+              <svg class="svg-icon" viewBox="0 0 24 24" style="width:18px;height:18px"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+              Camera
+            </button>
+            <button class="chip" type="button">
+              <svg class="svg-icon" viewBox="0 0 24 24" style="width:18px;height:18px"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/></svg>
+              Vibe
+            </button>
+          </div>
+          <button class="chip primary" id="sharePostBtn">
+            <svg class="svg-icon" viewBox="0 0 24 24" style="width:18px;height:18px"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            Share
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- COMMENTS DRAWER MODAL -->
+    <div class="modal-overlay" id="commentModal">
+      <div class="modal-card">
+        <div class="modal-head">
+          <span>Comments</span>
+          <button class="close-x" id="closeCommentModal">
+            <svg class="svg-icon" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+
+        <div class="comments-list" id="commentsList">
+          <!-- Comments render dynamically -->
+        </div>
+
+        <div class="comment-input-box">
+          <input type="text" id="commentInput" placeholder="Add a comment..." />
+          <button class="send-btn" id="submitCommentBtn">
+            <svg class="svg-icon" viewBox="0 0 24 24" style="width:18px;height:18px"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const state = {
+        theme: 'light',
+        activePostIdForComment: null,
+        uploadedImageBase64: null,
+        posts: [
+          {
+            id: 1,
+            author: 'liamcharlie',
+            handle: '@liamcharlie',
+            avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80',
+            image: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=1200&q=80',
+            caption: 'Felt Cute!...',
+            likes: 128,
+            liked: false,
+            time: '3 days ago',
+            comments: [
+              { user: 'nora', avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=200&q=80', text: 'Love the lighting in this!' },
+              { user: 'jae', avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=200&q=80', text: 'Stunning capture 🔥' }
+            ]
+          },
+          {
+            id: 2,
+            author: 'nora',
+            handle: '@nora',
+            avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=200&q=80',
+            image: 'https://images.unsplash.com/photo-1514565131-fce0801e5785?auto=format&fit=crop&w=1200&q=80',
+            caption: 'Sunset city vibes.',
+            likes: 486,
+            liked: true,
+            time: '1 week ago',
+            comments: [
+              { user: 'mila', avatar: 'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=200&q=80', text: 'Where was this taken?' }
+            ]
+          }
+        ]
+      };
+
+      const moonIcon = `<svg class="svg-icon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>`;
+      const sunIcon = `<svg class="svg-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>`;
+
+      function showScreen(screenId) {
+        document.querySelectorAll('.screen').forEach(screen => {
+          screen.classList.toggle('active', screen.id === screenId);
+        });
+      }
+
+      function setTheme(mode) {
+        state.theme = mode;
+        document.body.classList.toggle('dark', mode === 'dark');
+        const btn = document.getElementById('themeToggle');
+        if (btn) btn.innerHTML = mode === 'dark' ? sunIcon : moonIcon;
+      }
+
+      function renderPosts() {
+        const container = document.getElementById('postContainer');
+        if (!container) return;
+        container.innerHTML = '';
+
+        state.posts.forEach(post => {
+          const article = document.createElement('article');
+          article.className = 'post';
+
+          article.innerHTML = `
+            <div class="post-header">
+              <div class="avatar" style="background-image:url('${post.avatar}')"></div>
+              <div style="flex:1;">
+                <div class="post-author">${post.author}</div>
+                <div class="post-handle">${post.handle}</div>
+              </div>
+              <div class="post-more">
+                <svg class="svg-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+              </div>
+            </div>
+            <div class="post-image" style="background-image:url('${post.image}')"></div>
+            <div class="post-actions">
+              <button class="icon-btn ${post.liked ? 'liked' : ''}" data-like="${post.id}">
+                <svg class="svg-icon ${post.liked ? 'fill-current' : ''}" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              </button>
+              <button class="icon-btn" data-open-comments="${post.id}">
+                <svg class="svg-icon" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+              </button>
+              <button class="icon-btn">
+                <svg class="svg-icon" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+              </button>
+            </div>
+            <div class="meta">${post.likes} likes · ${post.comments.length} comments</div>
+            <div class="caption"><strong>${post.author}</strong> ${post.caption}</div>
+            <div class="time-ago">${post.time}</div>
+          `;
+
+          container.appendChild(article);
+        });
+
+        document.querySelectorAll('[data-like]').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const id = Number(btn.dataset.like);
+            state.posts = state.posts.map(p => {
+              if (p.id !== id) return p;
+              return { ...p, liked: !p.liked, likes: p.liked ? p.likes - 1 : p.likes + 1 };
+            });
+            renderPosts();
+          });
+        });
+
+        document.querySelectorAll('[data-open-comments]').forEach(btn => {
+          btn.addEventListener('click', () => {
+            openCommentModal(Number(btn.dataset.openComments));
+          });
+        });
+      }
+
+      function openCommentModal(postId) {
+        state.activePostIdForComment = postId;
+        const post = state.posts.find(p => p.id === postId);
+        const list = document.getElementById('commentsList');
+        list.innerHTML = '';
+
+        if (post && post.comments) {
+          post.comments.forEach(c => {
+            const item = document.createElement('div');
+            item.className = 'comment-item';
+            item.innerHTML = `
+              <div class="comment-avatar" style="background-image:url('${c.avatar}')"></div>
+              <div class="comment-content">
+                <div class="comment-user">${c.user}</div>
+                <div>${c.text}</div>
+              </div>
+            `;
+            list.appendChild(item);
+          });
+        }
+
+        document.getElementById('commentModal').classList.add('show');
+      }
+
+      document.getElementById('closeCommentModal').addEventListener('click', () => {
+        document.getElementById('commentModal').classList.remove('show');
+      });
+
+      document.getElementById('submitCommentBtn').addEventListener('click', () => {
+        const input = document.getElementById('commentInput');
+        const val = input.value.trim();
+        if (!val || !state.activePostIdForComment) return;
+
+        state.posts = state.posts.map(p => {
+          if (p.id !== state.activePostIdForComment) return p;
+          return {
+            ...p,
+            comments: [...p.comments, { user: 'maya.woo', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=400&q=80', text: val }]
+          };
+        });
+
+        input.value = '';
+        renderPosts();
+        openCommentModal(state.activePostIdForComment);
+      });
+
+      // Navigation setup
+      document.querySelectorAll('[data-nav]').forEach(btn => {
+        btn.addEventListener('click', e => {
+          const target = e.currentTarget.dataset.nav;
+          showScreen(target);
+          document.querySelectorAll('.bottom-nav .nav-item').forEach(nav => {
+            nav.classList.toggle('active', nav.dataset.nav === target);
+          });
+        });
+      });
+
+      document.querySelectorAll('[data-target]').forEach(btn => {
+        btn.addEventListener('click', () => showScreen(btn.dataset.target));
+      });
+
+      document.querySelectorAll('[data-back]').forEach(btn => {
+        btn.addEventListener('click', () => showScreen(btn.dataset.back));
+      });
+
+      document.querySelectorAll('[data-open-create]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.getElementById('createModal').classList.add('show');
+        });
+      });
+
+      document.querySelectorAll('[data-close-create]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.getElementById('createModal').classList.remove('show');
+        });
+      });
+
+      document.querySelectorAll('[data-toggle]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const field = document.getElementById(btn.dataset.toggle);
+          field.type = field.type === 'password' ? 'text' : 'password';
+        });
+      });
+
+      document.querySelector('[data-login]').addEventListener('click', () => showScreen('feedScreen'));
+      document.querySelector('[data-register]').addEventListener('click', () => showScreen('feedScreen'));
+      document.getElementById('themeToggle').addEventListener('click', () => setTheme(state.theme === 'light' ? 'dark' : 'light'));
+
+      // File handling for Create Post Flow
+      const dropzone = document.getElementById('uploadDropzone');
+      const fileInput = document.getElementById('fileInput');
+      const preview = document.getElementById('uploadPreview');
+
+      dropzone.addEventListener('click', () => fileInput.click());
+      document.getElementById('cameraBtn').addEventListener('click', () => fileInput.click());
+
+      fileInput.addEventListener('change', e => {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = evt => {
+            state.uploadedImageBase64 = evt.target.result;
+            preview.src = evt.target.result;
+            preview.style.display = 'block';
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+
+      document.getElementById('sharePostBtn').addEventListener('click', () => {
+        const caption = document.getElementById('postCaption').value.trim();
+        const newPost = {
+          id: Date.now(),
+          author: 'maya.woo',
+          handle: '@maya.woo',
+          avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=400&q=80',
+          image: state.uploadedImageBase64 || 'https://images.unsplash.com/photo-1493246507139-91e8fad9978e?auto=format&fit=crop&w=1200&q=80',
+          caption: caption || 'New moment shared ✨',
+          likes: 0,
+          liked: false,
+          time: 'Just now',
+          comments: []
+        };
+
+        state.posts.unshift(newPost);
+        renderPosts();
+
+        // Reset and hide modal
+        document.getElementById('postCaption').value = '';
+        preview.style.display = 'none';
+        state.uploadedImageBase64 = null;
+        document.getElementById('createModal').classList.remove('show');
+        showScreen('feedScreen');
+      });
+
+      document.querySelectorAll('[data-chat]').forEach(item => {
+        item.addEventListener('click', () => showScreen('chatScreen'));
+      });
+
+      // Initial execution
+      renderPosts();
+      setTheme('light');
+    </script>
+  </body>
+</html>
